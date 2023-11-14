@@ -16,7 +16,6 @@ import {
   useState,
 } from 'react';
 
-import { useTranslation } from 'next-i18next';
 
 import { Message } from '@/types/chat';
 import { Plugin } from '@/types/plugin';
@@ -27,6 +26,7 @@ import HomeContext from '@/pages/api/home/home.context';
 import { PluginSelect } from './PluginSelect';
 import { PromptList } from './PromptList';
 import { VariableModal } from './VariableModal';
+import useFakeTranslation from '@/hooks/useFakeTranslation';
 
 interface Props {
   onSend: (message: Message, plugin: Plugin | null) => void;
@@ -45,7 +45,7 @@ export const ChatInput = ({
   textareaRef,
   showScrollDownButton,
 }: Props) => {
-  const { t } = useTranslation('chat');
+  const { t } = useFakeTranslation('chat');
 
   const {
     state: { selectedConversation, messageIsStreaming, prompts },
@@ -76,8 +76,7 @@ export const ChatInput = ({
     if (maxLength && value.length > maxLength) {
       alert(
         t(
-          `Message limit is {{maxLength}} characters. You have entered {{valueLength}} characters.`,
-          { maxLength, valueLength: value.length },
+          `Message limit is ${maxLength}} characters. You have entered ${value.length} characters.`
         ),
       );
       return;

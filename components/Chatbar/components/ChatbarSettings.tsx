@@ -1,8 +1,6 @@
 import { IconFileExport, IconSettings } from '@tabler/icons-react';
 import { useContext, useState } from 'react';
 
-import { useTranslation } from 'next-i18next';
-
 import HomeContext from '@/pages/api/home/home.context';
 
 import { SettingDialog } from '@/components/Settings/SettingDialog';
@@ -13,9 +11,10 @@ import { SidebarButton } from '../../Sidebar/SidebarButton';
 import ChatbarContext from '../Chatbar.context';
 import { ClearConversations } from './ClearConversations';
 import { PluginKeys } from './PluginKeys';
+import useFakeTranslation from '@/hooks/useFakeTranslation';
 
 export const ChatbarSettings = () => {
-  const { t } = useTranslation('sidebar');
+  const { t } = useFakeTranslation('sidebar');
   const [isSettingDialogOpen, setIsSettingDialog] = useState<boolean>(false);
 
   const {

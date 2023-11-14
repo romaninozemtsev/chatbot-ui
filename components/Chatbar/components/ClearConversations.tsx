@@ -1,9 +1,8 @@
 import { IconCheck, IconTrash, IconX } from '@tabler/icons-react';
 import { FC, useState } from 'react';
 
-import { useTranslation } from 'next-i18next';
-
 import { SidebarButton } from '@/components/Sidebar/SidebarButton';
+import useFakeTranslation from '@/hooks/useFakeTranslation';
 
 interface Props {
   onClearConversations: () => void;
@@ -12,7 +11,7 @@ interface Props {
 export const ClearConversations: FC<Props> = ({ onClearConversations }) => {
   const [isConfirming, setIsConfirming] = useState<boolean>(false);
 
-  const { t } = useTranslation('sidebar');
+  const { t } = useFakeTranslation('sidebar');
 
   const handleClearConversations = () => {
     onClearConversations();

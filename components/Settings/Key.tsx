@@ -1,9 +1,8 @@
 import { IconCheck, IconKey, IconX } from '@tabler/icons-react';
 import { FC, KeyboardEvent, useEffect, useRef, useState } from 'react';
 
-import { useTranslation } from 'next-i18next';
-
 import { SidebarButton } from '../Sidebar/SidebarButton';
+import useFakeTranslation from '@/hooks/useFakeTranslation';
 
 interface Props {
   apiKey: string;
@@ -11,7 +10,7 @@ interface Props {
 }
 
 export const Key: FC<Props> = ({ apiKey, onApiKeyChange }) => {
-  const { t } = useTranslation('sidebar');
+  const { t } = useFakeTranslation('sidebar');
   const [isChanging, setIsChanging] = useState(false);
   const [newKey, setNewKey] = useState(apiKey);
   const inputRef = useRef<HTMLInputElement>(null);

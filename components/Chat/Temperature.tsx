@@ -1,10 +1,9 @@
 import { FC, useContext, useState } from 'react';
 
-import { useTranslation } from 'next-i18next';
-
 import { DEFAULT_TEMPERATURE } from '@/utils/app/const';
 
 import HomeContext from '@/pages/api/home/home.context';
+import useFakeTranslation from '@/hooks/useFakeTranslation';
 
 interface Props {
   label: string;
@@ -22,7 +21,7 @@ export const TemperatureSlider: FC<Props> = ({
   const [temperature, setTemperature] = useState(
     lastConversation?.temperature ?? DEFAULT_TEMPERATURE,
   );
-  const { t } = useTranslation('chat');
+  const { t } = useFakeTranslation('chat');
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = parseFloat(event.target.value);
     setTemperature(newValue);

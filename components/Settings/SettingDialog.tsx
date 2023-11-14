@@ -1,7 +1,5 @@
 import { FC, useContext, useEffect, useReducer, useRef } from 'react';
 
-import { useTranslation } from 'next-i18next';
-
 import { useCreateReducer } from '@/hooks/useCreateReducer';
 
 import { getSettings, saveSettings } from '@/utils/app/settings';
@@ -9,6 +7,7 @@ import { getSettings, saveSettings } from '@/utils/app/settings';
 import { Settings } from '@/types/settings';
 
 import HomeContext from '@/pages/api/home/home.context';
+import useFakeTranslation from '@/hooks/useFakeTranslation';
 
 interface Props {
   open: boolean;
@@ -16,7 +15,7 @@ interface Props {
 }
 
 export const SettingDialog: FC<Props> = ({ open, onClose }) => {
-  const { t } = useTranslation('settings');
+  const { t } = useFakeTranslation('settings');
   const settings: Settings = getSettings();
   const { state, dispatch } = useCreateReducer<Settings>({
     initialState: settings,

@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { useCreateReducer } from '@/hooks/useCreateReducer';
 
@@ -19,9 +18,10 @@ import PromptbarContext from './PromptBar.context';
 import { PromptbarInitialState, initialState } from './Promptbar.state';
 
 import { v4 as uuidv4 } from 'uuid';
+import useFakeTranslation from '@/hooks/useFakeTranslation';
 
 const Promptbar = () => {
-  const { t } = useTranslation('promptbar');
+  const { t } = useFakeTranslation('promptbar');
 
   const promptBarContextValue = useCreateReducer<PromptbarInitialState>({
     initialState,

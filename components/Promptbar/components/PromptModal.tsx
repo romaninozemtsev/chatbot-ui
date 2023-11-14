@@ -1,8 +1,7 @@
 import { FC, KeyboardEvent, useEffect, useRef, useState } from 'react';
 
-import { useTranslation } from 'next-i18next';
-
 import { Prompt } from '@/types/prompt';
+import useFakeTranslation from '@/hooks/useFakeTranslation';
 
 interface Props {
   prompt: Prompt;
@@ -11,7 +10,7 @@ interface Props {
 }
 
 export const PromptModal: FC<Props> = ({ prompt, onClose, onUpdatePrompt }) => {
-  const { t } = useTranslation('promptbar');
+  const { t } = useFakeTranslation('promptbar');
   const [name, setName] = useState(prompt.name);
   const [description, setDescription] = useState(prompt.description);
   const [content, setContent] = useState(prompt.content);

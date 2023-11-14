@@ -1,11 +1,10 @@
 import { useMemo } from 'react';
 
-import { useTranslation } from 'next-i18next';
-
 import { ErrorMessage } from '@/types/error';
+import useFakeTranslation from '@/hooks/useFakeTranslation';
 
 const useErrorService = () => {
-  const { t } = useTranslation('chat');
+  const { t } = useFakeTranslation('chat');
 
   return {
     getModelsError: useMemo(

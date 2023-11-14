@@ -10,8 +10,6 @@ import {
 } from 'react';
 import toast from 'react-hot-toast';
 
-import { useTranslation } from 'next-i18next';
-
 import { getEndpoint } from '@/utils/app/api';
 import {
   saveConversation,
@@ -33,13 +31,15 @@ import { ModelSelect } from './ModelSelect';
 import { SystemPrompt } from './SystemPrompt';
 import { TemperatureSlider } from './Temperature';
 import { MemoizedChatMessage } from './MemoizedChatMessage';
+import useFakeTranslation from '@/hooks/useFakeTranslation';
+import useApiService from '@/services/useApiService';
 
 interface Props {
   stopConversationRef: MutableRefObject<boolean>;
 }
 
 export const Chat = memo(({ stopConversationRef }: Props) => {
-  const { t } = useTranslation('chat');
+  const { t } = useFakeTranslation('chat');
 
   const {
     state: {
@@ -67,6 +67,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  //const {sendChatMessage} = useApiService();
 
   const handleSend = useCallback(
     async (message: Message, deleteCount = 0, plugin: Plugin | null = null) => {
@@ -124,6 +125,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
           signal: controller.signal,
           body,
         });
+        //const response = sendChatMessage(chatBody);
         if (!response.ok) {
           homeDispatch({ field: 'loading', value: false });
           homeDispatch({ field: 'messageIsStreaming', value: false });
@@ -290,7 +292,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
 
   const onClearAll = () => {
     if (
-      confirm(t<string>('Are you sure you want to clear all messages?')) &&
+      confirm(t('Are you sure you want to clear all messages?')) &&
       selectedConversation
     ) {
       handleUpdateConversation(selectedConversation, {

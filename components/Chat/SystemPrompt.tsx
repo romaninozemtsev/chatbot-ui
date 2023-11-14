@@ -7,7 +7,6 @@ import {
   useState,
 } from 'react';
 
-import { useTranslation } from 'next-i18next';
 
 import { DEFAULT_SYSTEM_PROMPT } from '@/utils/app/const';
 
@@ -16,6 +15,7 @@ import { Prompt } from '@/types/prompt';
 
 import { PromptList } from './PromptList';
 import { VariableModal } from './VariableModal';
+import useFakeTranslation from '@/hooks/useFakeTranslation';
 
 interface Props {
   conversation: Conversation;
@@ -28,7 +28,7 @@ export const SystemPrompt: FC<Props> = ({
   prompts,
   onChangePrompt,
 }) => {
-  const { t } = useTranslation('chat');
+  const { t } = useFakeTranslation('chat');
 
   const [value, setValue] = useState<string>('');
   const [activePromptIndex, setActivePromptIndex] = useState(0);
@@ -51,8 +51,7 @@ export const SystemPrompt: FC<Props> = ({
     if (value.length > maxLength) {
       alert(
         t(
-          `Prompt limit is {{maxLength}} characters. You have entered {{valueLength}} characters.`,
-          { maxLength, valueLength: value.length },
+          `Prompt limit is ${maxLength} characters. You have entered ${value.length} characters.`
         ),
       );
       return;

@@ -1,7 +1,6 @@
 import { IconX } from '@tabler/icons-react';
 import { FC } from 'react';
-
-import { useTranslation } from 'next-i18next';
+import useFakeTranslation from '@/hooks/useFakeTranslation';
 
 interface Props {
   placeholder: string;
@@ -9,7 +8,7 @@ interface Props {
   onSearch: (searchTerm: string) => void;
 }
 const Search: FC<Props> = ({ placeholder, searchTerm, onSearch }) => {
-  const { t } = useTranslation('sidebar');
+  const { t } = useFakeTranslation('sidebar');
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onSearch(e.target.value);

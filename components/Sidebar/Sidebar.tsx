@@ -1,6 +1,5 @@
 import { IconFolderPlus, IconMistOff, IconPlus } from '@tabler/icons-react';
 import { ReactNode } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import {
   CloseSidebarButton,
@@ -8,6 +7,7 @@ import {
 } from './components/OpenCloseButton';
 
 import Search from '../Search';
+import useFakeTranslation from '@/hooks/useFakeTranslation';
 
 interface Props<T> {
   isOpen: boolean;
@@ -40,7 +40,7 @@ const Sidebar = <T,>({
   handleCreateFolder,
   handleDrop,
 }: Props<T>) => {
-  const { t } = useTranslation('promptbar');
+  const { t } = useFakeTranslation('promptbar');
 
   const allowDrop = (e: any) => {
     e.preventDefault();

@@ -3,7 +3,7 @@ import { useContext } from 'react';
 
 import { OpenAIModel } from '@/types/openai';
 
-import HomeContext from '@/pages/api/home/home.context';
+import HomeContext from '@/components/Home/home.context';
 import useFakeTranslation from '@/hooks/useFakeTranslation';
 
 export const ModelSelect = () => {

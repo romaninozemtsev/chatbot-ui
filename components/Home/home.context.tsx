@@ -6,7 +6,7 @@ import { Conversation } from '@/types/chat';
 import { KeyValuePair } from '@/types/data';
 import { FolderType } from '@/types/folder';
 
-import { HomeInitialState } from './home.state';
+import { HomeInitialState } from '@/types/home.state';
 
 export interface HomeContextProps {
   state: HomeInitialState;

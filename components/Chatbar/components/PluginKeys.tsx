@@ -3,7 +3,7 @@ import { KeyboardEvent, useContext, useEffect, useRef, useState } from 'react';
 
 import { PluginID, PluginKey } from '@/types/plugin';
 
-import HomeContext from '@/pages/api/home/home.context';
+import HomeContext from '@/components/Home/home.context';
 
 import { SidebarButton } from '@/components/Sidebar/SidebarButton';
 

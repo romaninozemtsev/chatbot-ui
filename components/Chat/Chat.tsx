@@ -21,7 +21,7 @@ import { throttle } from '@/utils/data/throttle';
 import { ChatBody, Conversation, Message } from '@/types/chat';
 import { Plugin } from '@/types/plugin';
 
-import HomeContext from '@/pages/api/home/home.context';
+import HomeContext from '@/components/Home/home.context';
 
 import Spinner from '../Spinner';
 import { ChatInput } from './ChatInput';
@@ -67,7 +67,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  //const {sendChatMessage} = useApiService();
+  const {sendChatMessage} = useApiService();
 
   const handleSend = useCallback(
     async (message: Message, deleteCount = 0, plugin: Plugin | null = null) => {
@@ -116,28 +116,8 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
               ?.requiredKeys.find((key) => key.key === 'GOOGLE_CSE_ID')?.value,
           });
         }
-        const controller = new AbortController();
-        const response = await fetch(endpoint, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          signal: controller.signal,
-          body,
-        });
-        //const response = sendChatMessage(chatBody);
-        if (!response.ok) {
-          homeDispatch({ field: 'loading', value: false });
-          homeDispatch({ field: 'messageIsStreaming', value: false });
-          toast.error(response.statusText);
-          return;
-        }
-        const data = response.body;
-        if (!data) {
-          homeDispatch({ field: 'loading', value: false });
-          homeDispatch({ field: 'messageIsStreaming', value: false });
-          return;
-        }
+        const stream = await sendChatMessage(chatBody);
+        const controller = stream.controller;
         if (!plugin) {
           if (updatedConversation.messages.length === 1) {
             const { content } = message;
@@ -149,20 +129,16 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
             };
           }
           homeDispatch({ field: 'loading', value: false });
-          const reader = data.getReader();
-          const decoder = new TextDecoder();
           let done = false;
           let isFirst = true;
           let text = '';
-          while (!done) {
+          for await (const chunk of stream) {
             if (stopConversationRef.current === true) {
               controller.abort();
               done = true;
               break;
             }
-            const { value, done: doneReading } = await reader.read();
-            done = doneReading;
-            const chunkValue = decoder.decode(value);
+            const chunkValue = chunk.choices[0]?.delta?.content || '';
             text += chunkValue;
             if (isFirst) {
               isFirst = false;
@@ -215,35 +191,35 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
           saveConversations(updatedConversations);
           homeDispatch({ field: 'messageIsStreaming', value: false });
         } else {
-          const { answer } = await response.json();
-          const updatedMessages: Message[] = [
-            ...updatedConversation.messages,
-            { role: 'assistant', content: answer },
-          ];
-          updatedConversation = {
-            ...updatedConversation,
-            messages: updatedMessages,
-          };
-          homeDispatch({
-            field: 'selectedConversation',
-            value: updateConversation,
-          });
-          saveConversation(updatedConversation);
-          const updatedConversations: Conversation[] = conversations.map(
-            (conversation) => {
-              if (conversation.id === selectedConversation.id) {
-                return updatedConversation;
-              }
-              return conversation;
-            },
-          );
-          if (updatedConversations.length === 0) {
-            updatedConversations.push(updatedConversation);
-          }
-          homeDispatch({ field: 'conversations', value: updatedConversations });
-          saveConversations(updatedConversations);
-          homeDispatch({ field: 'loading', value: false });
-          homeDispatch({ field: 'messageIsStreaming', value: false });
+          // const { answer } = await response.json();
+          // const updatedMessages: Message[] = [
+          //   ...updatedConversation.messages,
+          //   { role: 'assistant', content: answer },
+          // ];
+          // updatedConversation = {
+          //   ...updatedConversation,
+          //   messages: updatedMessages,
+          // };
+          // homeDispatch({
+          //   field: 'selectedConversation',
+          //   value: updateConversation,
+          // });
+          // saveConversation(updatedConversation);
+          // const updatedConversations: Conversation[] = conversations.map(
+          //   (conversation) => {
+          //     if (conversation.id === selectedConversation.id) {
+          //       return updatedConversation;
+          //     }
+          //     return conversation;
+          //   },
+          // );
+          // if (updatedConversations.length === 0) {
+          //   updatedConversations.push(updatedConversation);
+          // }
+          // homeDispatch({ field: 'conversations', value: updatedConversations });
+          // saveConversations(updatedConversations);
+          // homeDispatch({ field: 'loading', value: false });
+          // homeDispatch({ field: 'messageIsStreaming', value: false });
         }
       }
     },

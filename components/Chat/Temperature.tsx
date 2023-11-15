@@ -2,7 +2,7 @@ import { FC, useContext, useState } from 'react';
 
 import { DEFAULT_TEMPERATURE } from '@/utils/app/const';
 
-import HomeContext from '@/pages/api/home/home.context';
+import HomeContext from '@/components/Home/home.context';
 import useFakeTranslation from '@/hooks/useFakeTranslation';
 
 interface Props {

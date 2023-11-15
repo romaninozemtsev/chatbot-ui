@@ -6,7 +6,7 @@ import { getSettings, saveSettings } from '@/utils/app/settings';
 
 import { Settings } from '@/types/settings';
 
-import HomeContext from '@/pages/api/home/home.context';
+import HomeContext from '@/components/Home/home.context';
 import useFakeTranslation from '@/hooks/useFakeTranslation';
 
 interface Props {

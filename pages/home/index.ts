@@ -1,1 +1,1 @@
-export { default } from './_dd';
+export { default } from './_home';

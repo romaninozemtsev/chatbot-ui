@@ -1,14 +1,8 @@
-import { useCallback } from 'react';
-
 import { useFetch } from '@/hooks/useFetch';
-
-import { OPENAI_API_HOST, OPENAI_API_TYPE, OPENAI_API_VERSION, OPENAI_ORGANIZATION } from '@/utils/app/const';
-
 import { OpenAIModel, OpenAIModelID, OpenAIModels } from '@/types/openai';
 import { ChatBody, Message } from '@/types/chat';
 
 import OpenAI from 'openai';
-import { ChatCompletionMessageParam } from 'openai/resources';
 
 export interface GetModelsRequestProps {
   key: string;
@@ -37,7 +31,6 @@ const getModelsHandler = async (keyProp: GetModelsRequestProps): Promise<OpenAIM
 };
 
 
-
 const sendChatMessage = async ({ model, messages, key, prompt, temperature }: ChatBody) => {
   const messagesWithPrompt = [
     {
@@ -48,36 +41,49 @@ const sendChatMessage = async ({ model, messages, key, prompt, temperature }: Ch
   ] as Message[];
 
   const openAI = createOpenAiClient(key);
-  const chatStream = await openAI.chat.completions.create({
+  const chatStream = openAI.beta.chat.completions
+  .stream({
     messages: messagesWithPrompt,
-    stream: true,
     model: model.id,
-    temperature
+    //temperature,
+    //stream: true,
+    functions: [
+      {
+        name: "getCurrentLocation",
+        parameters: { type: 'object', properties: {} },
+      },
+      {
+        name: "getWeather",
+        //parse: JSON.parse, // or use a validation library like zod for typesafe parsing.
+        parameters: {
+          type: 'object',
+          properties: {
+            location: { type: 'string' },
+          },
+        },
+      }
+    ],
   });
-
   return chatStream;
 };
+
+async function getCurrentLocation() {
+  console.log('===getCurrentLocation')
+  return 'Boston'; // Simulate lookup
+}
+
+async function getWeather(args: { location: string }) {
+  console.log('===getWeather')
+  const { location } = args;
+  // … do lookup …
+  const temperature = 72;
+  const precipitation = 0.2;
+  return { temperature, precipitation };
+}
 
 
 const useApiService = () => {
   const fetchService = useFetch();
-
-  // const getModels = useCallback(
-  // 	(
-  // 		params: GetManagementRoutineInstanceDetailedParams,
-  // 		signal?: AbortSignal
-  // 	) => {
-  // 		return fetchService.get<GetManagementRoutineInstanceDetailed>(
-  // 			`/v1/ManagementRoutines/${params.managementRoutineId}/instances/${params.instanceId
-  // 			}?sensorGroupIds=${params.sensorGroupId ?? ''}`,
-  // 			{
-  // 				signal,
-  // 			}
-  // 		);
-  // 	},
-  // 	[fetchService]
-  // );
-
   return {
     getModels: getModelsHandler,
     sendChatMessage,

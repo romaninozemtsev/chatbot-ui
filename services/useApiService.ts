@@ -41,19 +41,22 @@ const sendChatMessage = async ({ model, messages, key, prompt, temperature }: Ch
   ] as Message[];
 
   const openAI = createOpenAiClient(key);
-  const chatStream = openAI.beta.chat.completions
-  .stream({
+  const chatStream = openAI.beta.chat.completions.stream({
     messages: messagesWithPrompt,
     model: model.id,
     //temperature,
     //stream: true,
-    functions: [
+    tools: [
       {
-        name: "getCurrentLocation",
-        parameters: { type: 'object', properties: {} },
+        type: 'function',
+        function: {
+          name: "getCurrentLocation",
+          parameters: { type: 'object', properties: {} },
+        }
       },
       {
-        name: "getWeather",
+        type: 'function',
+        function: { name: "getWeather",
         //parse: JSON.parse, // or use a validation library like zod for typesafe parsing.
         parameters: {
           type: 'object',
@@ -61,6 +64,7 @@ const sendChatMessage = async ({ model, messages, key, prompt, temperature }: Ch
             location: { type: 'string' },
           },
         },
+      }
       }
     ],
   });

@@ -10,7 +10,7 @@ import { FC, memo, useContext, useEffect, useRef, useState } from 'react';
 
 import { updateConversation } from '@/utils/app/conversation';
 
-import { Message } from '@/types/chat';
+import { FunctionCall, Message } from '@/types/chat';
 
 import HomeContext from '@/components/Home/home.context';
 
@@ -21,14 +21,16 @@ import rehypeMathjax from 'rehype-mathjax';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import useFakeTranslation from '@/hooks/useFakeTranslation';
+import { FunctionRunBlock } from '../Markdown/FunctionRunBlock';
 
 export interface Props {
   message: Message;
   messageIndex: number;
-  onEdit?: (editedMessage: Message) => void
+  onEdit?: (editedMessage: Message) => void,
+  onFunctionCall: (functionCall: FunctionCall) => void,
 }
 
-export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit }) => {
+export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit, onFunctionCall }) => {
   const { t } = useFakeTranslation('chat');
 
   const {
@@ -265,6 +267,9 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit }) =
                 }`}
               </MemoizedReactMarkdown>
 
+              {message.function_call && (
+                <FunctionRunBlock value={message.function_call} onRun={() => onFunctionCall(message.function_call!)} />
+              )}
               <div className="md:-mr-8 ml-1 md:ml-0 flex flex-col md:flex-row gap-4 md:gap-1 items-center md:items-start justify-end md:justify-start">
                 {messagedCopied ? (
                   <IconCheck
